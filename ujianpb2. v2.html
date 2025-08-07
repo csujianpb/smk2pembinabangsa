@@ -1,0 +1,1952 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Ujian Halal - SMK 2 PEMBINA BANGSA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #5D3FD3;
+            --primary-dark: #4a32a8;
+            --secondary: #7b68ee;
+            --success: #20bf6b;
+            --danger: #eb3b5a;
+            --warning: #f7b731;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --text: #3d3d3d;
+            --text-light: #7f8fa6;
+            --border: #dfe4ea;
+            --shadow: 0 5px 20px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+            --whatsapp-green: #25D366;
+            --whatsapp-light: #dcf8c6;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa, #e4e7f1);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .page {
+            display: none;
+            min-height: 100vh;
+            width: 100%;
+            padding: 20px;
+            flex-direction: column;
+        }
+
+        .page.active {
+            display: flex;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo-text span {
+            color: var(--dark);
+        }
+
+        /* Login Page */
+        #page-login {
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+
+        .login-header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .login-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(93, 63, 211, 0.2);
+            outline: none;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            width: 100%;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(93, 63, 211, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(93, 63, 211, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: #ced6e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .form-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Exam Pages */
+        .exam-header {
+            background: white;
+            padding: 15px 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 70px;
+            z-index: 10;
+        }
+
+        .exam-header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .exam-info {
+            display: flex;
+            gap: 20px;
+        }
+
+        .exam-info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+        }
+
+        #timer {
+            background: var(--danger);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+        }
+
+        #progress-bar-container {
+            width: 100%;
+            background: var(--border);
+            height: 8px;
+            position: sticky;
+            top: 130px;
+            z-index: 9;
+        }
+
+        #progress-bar {
+            height: 100%;
+            background: var(--success);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .question-container {
+            padding: 30px 0;
+        }
+
+        .question-box {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+
+        .question-number {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 25px;
+            line-height: 1.7;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            background: #f8f9ff;
+            padding: 15px 20px;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .option:hover {
+            background: #eef1ff;
+        }
+
+        .option.selected {
+            background: #e6e0ff;
+            border-color: var(--primary);
+            font-weight: 600;
+        }
+
+        .option input {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        textarea.uraian-answer {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 16px;
+            resize: vertical;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        .btn-nav {
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-prev {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .btn-next {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-review {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Review Page */
+        .review-box {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .review-list {
+            list-style: none;
+            max-height: 50vh;
+            overflow-y: auto;
+            margin: 25px 0;
+        }
+
+        .review-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            transition: var(--transition);
+        }
+
+        .review-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .review-item.answered {
+            background: #e6fffa;
+            border-left: 4px solid var(--success);
+        }
+
+        .review-item.unanswered {
+            background: #ffebeb;
+            border-left: 4px solid var(--danger);
+        }
+
+        .review-item .unanswered-text {
+            color: var(--danger);
+            font-style: italic;
+        }
+
+        .review-item button {
+            background: none;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 6px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .review-item button:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Result Page */
+        .result-box {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            padding: 40px;
+            max-width: 800px;
+            margin: 40px auto;
+            text-align: center;
+        }
+
+        .result-header {
+            margin-bottom: 30px;
+        }
+
+        .result-header h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .result-header p {
+            color: var(--text-light);
+            font-size: 18px;
+        }
+
+        .score-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .score-visualizer {
+            position: relative;
+            width: 220px;
+            height: 220px;
+        }
+
+        .score-circle {
+            width: 100%;
+            height: 100%;
+        }
+
+        .score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .score-details {
+            margin: 25px 0;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-download {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-jpg {
+            background: #2980b9;
+        }
+
+        .btn-whatsapp {
+            background: var(--whatsapp-green);
+            color: white;
+        }
+
+        .btn-print {
+            background: #f39c12;
+        }
+
+        /* WhatsApp Preview */
+        #whatsapp-preview {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .whatsapp-container {
+            background: #e5ddd5;
+            width: 100%;
+            max-width: 400px;
+            height: 80vh;
+            border-radius: 15px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .whatsapp-header {
+            background: var(--whatsapp-green);
+            padding: 15px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .whatsapp-back {
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .whatsapp-title {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .whatsapp-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: url('https://i.pinimg.com/736x/8c/98/99/8c98994518b575bfd8c949e91d20548b.jpg');
+            background-size: contain;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .whatsapp-message {
+            max-width: 80%;
+            padding: 12px;
+            border-radius: 10px;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-received {
+            background: white;
+            align-self: flex-start;
+            border-top-left-radius: 2px;
+        }
+
+        .message-sent {
+            background: var(--whatsapp-light);
+            align-self: flex-end;
+            border-top-right-radius: 2px;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #999;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .whatsapp-footer {
+            background: #f0f0f0;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .whatsapp-input {
+            flex: 1;
+            padding: 12px 15px;
+            border-radius: 20px;
+            border: none;
+            outline: none;
+        }
+
+        .whatsapp-send {
+            background: var(--whatsapp-green);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* Certificate */
+        #certificate-wrapper {
+            width: 100%;
+            max-width: 1000px;
+            padding: 50px;
+            background: white;
+            position: absolute;
+            left: -9999px;
+            top: 0;
+            font-family: 'Georgia', serif;
+            border: 20px solid transparent;
+            border-image: linear-gradient(45deg, #5D3FD3, #7b68ee, #20bf6b);
+            border-image-slice: 1;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .certificate-border {
+            border: 2px solid #e0e0e0;
+            padding: 40px;
+            height: 100%;
+            position: relative;
+        }
+
+        .certificate-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .certificate-header h1 {
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            letter-spacing: 2px;
+        }
+
+        .certificate-header h2 {
+            font-size: 28px;
+            color: #5D3FD3;
+            margin-top: 10px;
+        }
+
+        .certificate-body {
+            text-align: center;
+            margin: 50px 0;
+        }
+
+        .certificate-name {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 25px 0;
+            text-decoration: underline;
+        }
+
+        .certificate-details {
+            margin: 30px 0;
+            text-align: left;
+            max-width: 700px;
+            margin: 30px auto;
+            background: #f9f9ff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            width: 40%;
+            color: #5D3FD3;
+        }
+
+        .detail-value {
+            width: 60%;
+            font-weight: 500;
+        }
+
+        .certificate-score {
+            font-size: 80px;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 20px 0;
+            background: linear-gradient(45deg, #5D3FD3, #7b68ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 15px rgba(93, 63, 211, 0.2);
+        }
+
+        .signature-area {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 80px;
+            padding-top: 20px;
+        }
+
+        .signature-box {
+            text-align: center;
+            width: 45%;
+        }
+
+        .signature-line {
+            border-top: 1px solid #000;
+            width: 200px;
+            margin: 0 auto;
+            padding-top: 5px;
+        }
+
+        .seal {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid #5D3FD3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #5D3FD3;
+            background: rgba(255,255,255,0.9);
+            transform: rotate(-15deg);
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.4;
+            padding: 10px;
+        }
+
+        /* Loading Indicator */
+        #loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            font-size: 24px;
+        }
+
+        .loading-spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #5D3FD3;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .exam-header-content {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .question-box, .result-box {
+                padding: 20px;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-nav {
+                width: 100%;
+            }
+            
+            #certificate-wrapper {
+                padding: 20px;
+                border-width: 10px;
+            }
+            
+            .certificate-border {
+                padding: 20px;
+            }
+            
+            .certificate-header h1 {
+                font-size: 32px;
+            }
+            
+            .certificate-header h2 {
+                font-size: 22px;
+            }
+            
+            .certificate-name {
+                font-size: 28px;
+            }
+            
+            .certificate-score {
+                font-size: 60px;
+            }
+            
+            .detail-row {
+                flex-direction: column;
+            }
+            
+            .detail-label, .detail-value {
+                width: 100%;
+            }
+            
+            .seal {
+                width: 80px;
+                height: 80px;
+                top: 20px;
+                right: 20px;
+                font-size: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .login-header {
+                padding: 20px;
+            }
+            
+            .login-body {
+                padding: 20px;
+            }
+            
+            .logo-text {
+                font-size: 20px;
+            }
+            
+            .question-text {
+                font-size: 16px;
+            }
+            
+            .result-header h1 {
+                font-size: 24px;
+            }
+            
+            #certificate-wrapper {
+                padding: 15px;
+                border-width: 5px;
+            }
+            
+            .certificate-border {
+                padding: 15px;
+            }
+            
+            .certificate-header h1 {
+                font-size: 24px;
+            }
+            
+            .certificate-header h2 {
+                font-size: 18px;
+            }
+            
+            .certificate-name {
+                font-size: 22px;
+            }
+            
+            .certificate-score {
+                font-size: 48px;
+            }
+            
+            .signature-area {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .signature-box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="logo-text">Sistem <span>Ujian Halal</span></div>
+                </div>
+                <div class="exam-info">
+                    <div class="exam-info-item">
+                        <i class="fas fa-user"></i>
+                        <span id="header-name">-</span>
+                    </div>
+                    <div class="exam-info-item">
+                        <i class="fas fa-book"></i>
+                        <span>Produktif TKJ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Loading Indicator -->
+    <div id="loading">
+        <div class="loading-spinner"></div>
+        <p>Membuat Sertifikat...</p>
+    </div>
+
+    <!-- WhatsApp Preview -->
+    <div id="whatsapp-preview">
+        <div class="whatsapp-container">
+            <div class="whatsapp-header">
+                <div class="whatsapp-back" id="close-whatsapp">
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+                <div class="whatsapp-title">Kirim Hasil Ujian</div>
+            </div>
+            <div class="whatsapp-body" id="whatsapp-messages">
+                <!-- Messages will be inserted here -->
+            </div>
+            <div class="whatsapp-footer">
+                <div class="whatsapp-input" contenteditable="true" placeholder="Ketik pesan..."></div>
+                <div class="whatsapp-send" id="send-whatsapp">
+                    <i class="fas fa-paper-plane"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Page -->
+    <div id="page-login" class="page active">
+        <div class="container">
+            <div class="login-box">
+                <div class="login-header">
+                    <h1><i class="fas fa-lock"></i> Login Ujian</h1>
+                    <p>Masukkan data diri Anda dengan benar</p>
+                </div>
+                <div class="login-body">
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="nama"><i class="fas fa-user"></i> Nama Lengkap</label>
+                            <input type="text" id="nama" class="form-control" placeholder="Masukkan nama lengkap" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="kelas"><i class="fas fa-users"></i> Pilih Kelas</label>
+                            <select id="kelas" class="form-control" required>
+                                <option value="">Pilih Kelas</option>
+                                <option value="X TKJ">X TKJ</option>
+                                <option value="XI TKJ">XI TKJ</option>
+                                <option value="XII TKJ">XII TKJ</option>
+                                <option value="X TKR">X TKR</option>
+                                <option value="XI TKR">XI TKR</option>
+                                <option value="XII TKR">XII TKR</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="token"><i class="fas fa-key"></i> Token Ujian</label>
+                            <input type="password" id="token" class="form-control" placeholder="Masukkan token yang diberikan" required>
+                        </div>
+                        
+                        <button type="submit" class="btn">
+                            <i class="fas fa-sign-in-alt"></i> Masuk
+                        </button>
+                    </form>
+                    
+                    <div class="form-footer">
+                        Pastikan data yang dimasukkan benar dan valid. 
+                        <br>Token hanya berlaku satu kali penggunaan.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Page -->
+    <div id="page-confirm" class="page">
+        <div class="container">
+            <div class="login-box">
+                <div class="login-header" style="background: linear-gradient(to right, #20bf6b, #01baef);">
+                    <h1><i class="fas fa-check-circle"></i> Konfirmasi Data</h1>
+                    <p>Verifikasi data sebelum memulai ujian</p>
+                </div>
+                <div class="login-body">
+                    <div class="details-box">
+                        <div class="detail-item">
+                            <i class="fas fa-user"></i> 
+                            <strong>Nama:</strong> 
+                            <span id="confirm-name">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-users"></i> 
+                            <strong>Kelas:</strong> 
+                            <span id="confirm-kelas">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-book-open"></i> 
+                            <strong>Mata Ujian:</strong> 
+                            <span>Produktif TKJ</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-clock"></i> 
+                            <strong>Durasi:</strong> 
+                            <span>90 Menit</span>
+                        </div>
+                    </div>
+                    
+                    <div class="warning-box">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Perhatian!</h3>
+                        <p>Pastikan data di atas benar. Ujian tidak dapat diulang setelah dimulai.</p>
+                        <p>Segala bentuk kecurangan akan berakibat pada pembatalan nilai.</p>
+                    </div>
+                    
+                    <div class="action-buttons" style="margin-top: 30px;">
+                        <button id="btn-back" class="btn" style="background: #7f8fa6;">
+                            <i class="fas fa-arrow-left"></i> Kembali
+                        </button>
+                        <button id="btn-start-exam" class="btn">
+                            <i class="fas fa-play"></i> Mulai Ujian
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exam Page -->
+    <div id="page-exam" class="page">
+        <div class="exam-header">
+            <div class="container">
+                <div class="exam-header-content">
+                    <div id="exam-title">Ujian Produktif TKJ</div>
+                    <div id="timer">
+                        <i class="fas fa-clock"></i>
+                        <span>90:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
+        
+        <div class="container">
+            <div class="question-container">
+                <div id="question-area"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Page -->
+    <div id="page-review" class="page">
+        <div class="container">
+            <div class="review-box">
+                <h1><i class="fas fa-clipboard-check"></i> Review Jawaban</h1>
+                <p>Periksa kembali jawaban sebelum mengumpulkan</p>
+                
+                <ul id="review-list" class="review-list"></ul>
+                
+                <div class="navigation-buttons">
+                    <button id="btn-back-to-exam" class="btn" style="background: #7f8fa6;">
+                        <i class="fas fa-arrow-left"></i> Kembali ke Ujian
+                    </button>
+                    <button id="btn-submit-exam" class="btn" style="background: #20bf6b;">
+                        <i class="fas fa-paper-plane"></i> Kumpulkan Jawaban
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Page -->
+    <div id="page-result" class="page">
+        <div class="container">
+            <div class="result-box">
+                <div class="result-header">
+                    <h1><i class="fas fa-trophy"></i> Hasil Ujian</h1>
+                    <p>Selamat, <strong id="result-name">[Nama]</strong>! Berikut hasil ujian Anda</p>
+                </div>
+                
+                <div class="score-container">
+                    <div class="score-visualizer">
+                        <svg class="score-circle" viewBox="0 0 36 36">
+                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                fill="none"
+                                stroke="#eee"
+                                stroke-width="3" />
+                            <path id="score-circle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                fill="none"
+                                stroke="#5D3FD3"
+                                stroke-width="3"
+                                stroke-linecap="round"
+                                stroke-dasharray="0, 100" />
+                        </svg>
+                        <div id="score-text" class="score-text">0</div>
+                    </div>
+                </div>
+                
+                <div class="score-details">
+                    <p>Total Benar: <strong id="total-correct">0</strong> dari <strong id="total-questions">0</strong> soal</p>
+                    <p>Nilai: <strong id="final-score">0</strong></p>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-download" data-action="download-pdf">
+                        <i class="fas fa-file-pdf"></i> Download PDF
+                    </button>
+                    <button class="btn btn-jpg" data-action="download-jpg">
+                        <i class="fas fa-file-image"></i> Download JPG
+                    </button>
+                    <button class="btn btn-whatsapp" data-action="whatsapp">
+                        <i class="fab fa-whatsapp"></i> Kirim WhatsApp
+                    </button>
+                    <button class="btn btn-print" data-action="print">
+                        <i class="fas fa-print"></i> Cetak Sertifikat
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Certificate Template -->
+    <div id="certificate-wrapper">
+        <div class="certificate-border">
+            <div class="seal">
+                SMK 2 PEMBINA BANGSA
+            </div>
+            
+            <div class="certificate-header">
+                <h1>SERTIFIKAT HASIL UJIAN</h1>
+                <p>Diberikan Kepada:</p>
+                <div class="certificate-name" id="cert-name">[Nama Lengkap]</div>
+                <h2>Atas Prestasi dalam Ujian Mata Pelajaran</h2>
+            </div>
+            
+            <div class="certificate-body">
+                <div class="certificate-details">
+                    <div class="detail-row">
+                        <div class="detail-label">Mata Pelajaran</div>
+                        <div class="detail-value">Produktif Teknik Komputer dan Jaringan</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Kelas</div>
+                        <div class="detail-value" id="cert-class">[Kelas]</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Tanggal Ujian</div>
+                        <div class="detail-value" id="cert-date">[Tanggal]</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Waktu Pengerjaan</div>
+                        <div class="detail-value" id="cert-duration">[Durasi]</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Jumlah Soal</div>
+                        <div class="detail-value">40 Soal (35 PG + 5 Uraian)</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Nilai Akhir</div>
+                        <div class="detail-value">
+                            <div class="certificate-score" id="cert-score">0</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p style="margin-top: 40px; font-style: italic;">
+                    Sertifikat ini merupakan bukti resmi atas prestasi akademik yang telah dicapai.<br>
+                    Semoga hasil ini dapat menjadi motivasi untuk terus belajar dan berprestasi.
+                </p>
+            </div>
+            
+            <div class="signature-area">
+                <div class="signature-box">
+                    <p>Peserta Ujian</p>
+                    <div class="signature-line"></div>
+                    <p><strong id="cert-student-name">[Nama Siswa]</strong></p>
+                </div>
+                <div class="signature-box">
+                    <p>Guru Pengampu</p>
+                    <div class="signature-line"></div>
+                    <p><strong>SONI HAJI, S.Kom</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data ujian
+        const questions = [
+            // 35 soal pilihan ganda
+            { type: 'pg', question: 'Apa fungsi utama switch dalam jaringan komputer?', options: ['Mengirim data ke jaringan yang berbeda', 'Menghubungkan perangkat dalam satu jaringan lokal', 'Mengatur lalu lintas internet', 'Mengamankan jaringan dari serangan'], answer: 1 },
+            { type: 'pg', question: 'Protokol yang digunakan untuk mengirim email adalah...', options: ['FTP', 'HTTP', 'SMTP', 'SSH'], answer: 2 },
+            { type: 'pg', question: 'Port default untuk HTTP adalah...', options: ['80', '443', '21', '25'], answer: 0 },
+            { type: 'pg', question: 'Apa kepanjangan dari DNS?', options: ['Dynamic Network System', 'Domain Name System', 'Digital Naming Service', 'Data Network Security'], answer: 1 },
+            { type: 'pg', question: 'Manakah yang termasuk jenis kabel jaringan?', options: ['HDMI', 'USB-C', 'UTP', 'VGA'], answer: 2 },
+            { type: 'pg', question: 'Apa fungsi firewall?', options: ['Mempercepat koneksi internet', 'Mengamankan jaringan dari akses tidak sah', 'Mengkompresi data', 'Mengatur alamat IP'], answer: 1 },
+            { type: 'pg', question: 'IP Address 192.168.1.1 termasuk kelas...', options: ['A', 'B', 'C', 'D'], answer: 2 },
+            { type: 'pg', question: 'Apa fungsi dari router?', options: ['Menghubungkan jaringan yang berbeda', 'Memperkuat sinyal jaringan', 'Menyimpan data jaringan', 'Mengkonversi sinyal analog ke digital'], answer: 0 },
+            { type: 'pg', question: 'Manakah yang bukan sistem operasi jaringan?', options: ['Windows Server', 'Ubuntu Server', 'Red Hat Enterprise Linux', 'Windows 10'], answer: 3 },
+            { type: 'pg', question: 'Apa kepanjangan dari LAN?', options: ['Long Area Network', 'Local Access Network', 'Local Area Network', 'Large Area Network'], answer: 2 },
+            { type: 'pg', question: 'Manakah yang termasuk protokol lapisan aplikasi?', options: ['TCP', 'IP', 'HTTP', 'Ethernet'], answer: 2 },
+            { type: 'pg', question: 'Apa fungsi DHCP?', options: ['Mengubah nama domain ke IP', 'Mengalokasikan IP secara otomatis', 'Mengamankan jaringan', 'Mengirim email'], answer: 1 },
+            { type: 'pg', question: 'Port default untuk HTTPS adalah...', options: ['80', '443', '8080', '21'], answer: 1 },
+            { type: 'pg', question: 'Apa kepanjangan dari VPN?', options: ['Virtual Private Network', 'Virtual Public Network', 'Visual Private Network', 'Virtual Protocol Network'], answer: 0 },
+            { type: 'pg', question: 'Alat yang digunakan untuk menguji koneksi jaringan adalah...', options: ['Multimeter', 'Oscilloscope', 'Ping', 'Router'], answer: 2 },
+            { type: 'pg', question: 'Manakah yang termasuk topologi jaringan?', options: ['Star', 'USB', 'HDMI', 'TCP/IP'], answer: 0 },
+            { type: 'pg', question: 'Apa fungsi utama server DNS?', options: ['Menyimpan file', 'Menerjemahkan nama domain ke IP', 'Mengirim email', 'Mengamankan jaringan'], answer: 1 },
+            { type: 'pg', question: 'Manakah yang bukan jenis kabel fiber optik?', options: ['Single mode', 'Multi mode', 'Coaxial', 'Tidak ada jawaban benar'], answer: 2 },
+            { type: 'pg', question: 'Apa kepanjangan dari OSI?', options: ['Open System Interconnection', 'Operating System Interface', 'Open Source Interface', 'Operating System Interconnection'], answer: 0 },
+            { type: 'pg', question: 'Lapisan OSI yang bertanggung jawab untuk routing adalah...', options: ['Physical', 'Data Link', 'Network', 'Transport'], answer: 2 },
+            // Tambahan 15 soal PG
+            { type: 'pg', question: 'Apa yang dimaksud dengan subnet mask?', options: ['Alamat unik perangkat di jaringan', 'Pembagian jaringan menjadi segmen kecil', 'Protokol untuk transfer data', 'Alat keamanan jaringan'], answer: 1 },
+            { type: 'pg', question: 'Manakah yang termasuk jenis topologi jaringan?', options: ['Bus', 'USB', 'HDMI', 'TCP'], answer: 0 },
+            { type: 'pg', question: 'Apa fungsi utama dari gateway?', options: ['Menghubungkan jaringan berbeda', 'Memperkuat sinyal', 'Menyimpan data', 'Mengamankan jaringan'], answer: 0 },
+            { type: 'pg', question: 'Port default untuk SSH adalah...', options: ['21', '22', '23', '80'], answer: 1 },
+            { type: 'pg', question: 'Manakah yang bukan jenis serangan jaringan?', options: ['Phishing', 'DDoS', 'Firewall', 'Malware'], answer: 2 },
+            { type: 'pg', question: 'Apa kepanjangan dari FTP?', options: ['File Transfer Protocol', 'File Transmission Protocol', 'Fast Transfer Protocol', 'File Transfer Process'], answer: 0 },
+            { type: 'pg', question: 'Apa fungsi NAT?', options: ['Menerjemahkan alamat IP publik ke privat', 'Mengamankan jaringan', 'Mempercepat koneksi', 'Mengatur bandwidth'], answer: 0 },
+            { type: 'pg', question: 'Manakah yang termasuk layer pada model OSI?', options: ['Aplikasi', 'Server', 'Client', 'Database'], answer: 0 },
+            { type: 'pg', question: 'Apa yang dimaksud dengan bandwidth?', options: ['Jumlah data yang dapat ditransfer per detik', 'Kecepatan koneksi internet', 'Jumlah perangkat dalam jaringan', 'Luas area jaringan'], answer: 0 },
+            { type: 'pg', question: 'Manakah yang termasuk protokol routing?', options: ['OSPF', 'HTTP', 'SMTP', 'FTP'], answer: 0 },
+            { type: 'pg', question: 'Apa fungsi ARP?', options: ['Menerjemahkan IP ke MAC address', 'Mengamankan jaringan', 'Mempercepat transfer data', 'Mengelola domain'], answer: 0 },
+            { type: 'pg', question: 'Port default untuk DNS adalah...', options: ['53', '80', '443', '21'], answer: 0 },
+            { type: 'pg', question: 'Apa yang dimaksud dengan VLAN?', options: ['Jaringan virtual dalam jaringan fisik', 'Jaringan nirkabel', 'Jaringan area luas', 'Jaringan kecepatan tinggi'], answer: 0 },
+            { type: 'pg', question: 'Manakah yang termasuk jenis koneksi internet?', options: ['Fiber Optic', 'USB', 'HDMI', 'VGA'], answer: 0 },
+            { type: 'pg', question: 'Apa fungsi dari proxy server?', options: ['Menyembunyikan identitas pengguna', 'Mempercepat koneksi', 'Mengamankan jaringan', 'Mengatur domain'], answer: 0 },
+            
+            // 5 soal esai
+            { type: 'esai', question: 'Jelaskan perbedaan antara router dan switch dalam jaringan komputer!' },
+            { type: 'esai', question: 'Apa yang dimaksud dengan DHCP dan bagaimana cara kerjanya?' },
+            { type: 'esai', question: 'Jelaskan langkah-langkah konfigurasi dasar pada router MikroTik!' },
+            { type: 'esai', question: 'Apa kelebihan dan kekurangan jaringan nirkabel dibandingkan jaringan kabel?' },
+            { type: 'esai', question: 'Bagaimana cara melakukan troubleshooting ketika koneksi internet tidak berfungsi?' }
+        ];
+
+        // Aplikasi utama
+        const UjianApp = {
+            // Inisialisasi variabel
+            init() {
+                this.studentData = {};
+                this.answers = new Array(questions.length).fill(null);
+                this.currentQuestion = 0;
+                this.timerInterval = null;
+                this.startTime = null;
+                this.timeLeft = 90 * 60; // 90 menit
+                this.examDuration = "";
+                
+                // Cache DOM elements
+                this.pages = {
+                    login: document.getElementById('page-login'),
+                    confirm: document.getElementById('page-confirm'),
+                    exam: document.getElementById('page-exam'),
+                    review: document.getElementById('page-review'),
+                    result: document.getElementById('page-result')
+                };
+                
+                this.loginForm = document.getElementById('login-form');
+                this.btnStartExam = document.getElementById('btn-start-exam');
+                this.btnBack = document.getElementById('btn-back');
+                this.btnBackToExam = document.getElementById('btn-back-to-exam');
+                this.btnSubmitExam = document.getElementById('btn-submit-exam');
+                this.questionArea = document.getElementById('question-area');
+                this.reviewList = document.getElementById('review-list');
+                this.timerDisplay = document.querySelector('#timer span');
+                this.progressBar = document.getElementById('progress-bar');
+                this.loadingElement = document.getElementById('loading');
+                this.whatsappPreview = document.getElementById('whatsapp-preview');
+                this.whatsappMessages = document.getElementById('whatsapp-messages');
+                this.closeWhatsapp = document.getElementById('close-whatsapp');
+                this.sendWhatsapp = document.getElementById('send-whatsapp');
+                
+                // Setup event listeners
+                this.setupEventListeners();
+            },
+            
+            // Setup semua event listener
+            setupEventListeners() {
+                // Form login
+                this.loginForm.addEventListener('submit', this.handleLogin.bind(this));
+                
+                // Tombol konfirmasi
+                this.btnBack.addEventListener('click', () => this.showPage('login'));
+                this.btnStartExam.addEventListener('click', this.startExam.bind(this));
+                
+                // Navigasi ujian
+                this.btnBackToExam.addEventListener('click', () => {
+                    this.showPage('exam');
+                    this.displayQuestion(this.currentQuestion);
+                });
+                
+                // Submit ujian
+                this.btnSubmitExam.addEventListener('click', this.confirmSubmit.bind(this));
+                
+                // Actions hasil ujian
+                document.getElementById('page-result').addEventListener('click', this.handleResultActions.bind(this));
+                
+                // WhatsApp preview
+                this.closeWhatsapp.addEventListener('click', () => {
+                    this.whatsappPreview.style.display = 'none';
+                });
+                
+                this.sendWhatsapp.addEventListener('click', this.shareViaWhatsApp.bind(this));
+            },
+            
+            // Handle login form
+            handleLogin(e) {
+                e.preventDefault();
+                
+                // Validasi form
+                const nama = document.getElementById('nama').value.trim();
+                const kelas = document.getElementById('kelas').value;
+                const token = document.getElementById('token').value.trim();
+                
+                // Validasi data
+                if (!nama || !kelas || !token) {
+                    alert('Semua field harus diisi!');
+                    return;
+                }
+                
+                if (token !== '123456') {
+                    alert('Token ujian tidak valid!');
+                    return;
+                }
+                
+                // Simpan data siswa
+                this.studentData = { nama, kelas };
+                
+                // Tampilkan data di halaman konfirmasi
+                document.getElementById('confirm-name').textContent = nama;
+                document.getElementById('confirm-kelas').textContent = kelas;
+                
+                // Tampilkan nama di header
+                document.getElementById('header-name').textContent = nama;
+                
+                // Pindah ke halaman konfirmasi
+                this.showPage('confirm');
+            },
+            
+            // Mulai ujian
+            startExam() {
+                this.startTime = new Date();
+                this.showPage('exam');
+                this.displayQuestion(0);
+                this.startTimer();
+            },
+            
+            // Tampilkan pertanyaan
+            displayQuestion(index) {
+                this.currentQuestion = index;
+                const question = questions[index];
+                
+                let html = `
+                    <div class="question-box">
+                        <div class="question-number">
+                            <i class="fas fa-question-circle"></i>
+                            Soal ${index + 1} dari ${questions.length}
+                        </div>
+                        <div class="question-text">${question.question}</div>
+                `;
+                
+                if (question.type === 'pg') {
+                    html += '<div class="options">';
+                    question.options.forEach((option, i) => {
+                        const isSelected = this.answers[index] === i;
+                        html += `
+                            <div class="option ${isSelected ? 'selected' : ''}" data-index="${i}">
+                                <input type="radio" name="answer" ${isSelected ? 'checked' : ''}>
+                                ${option}
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                } else {
+                    const answerText = this.answers[index] || '';
+                    html += `
+                        <textarea class="uraian-answer" placeholder="Tulis jawaban Anda di sini...">${answerText}</textarea>
+                    `;
+                }
+                
+                html += `
+                    <div class="navigation-buttons">
+                        ${index > 0 ? `<button class="btn-nav btn-prev" data-action="prev"><i class="fas fa-arrow-left"></i> Sebelumnya</button>` : '<div></div>'}
+                        ${index < questions.length - 1 ? `<button class="btn-nav btn-next" data-action="next">Berikutnya <i class="fas fa-arrow-right"></i></button>` : `<button class="btn-nav btn-review" data-action="review"><i class="fas fa-clipboard-check"></i> Review Jawaban</button>`}
+                    </div>
+                `;
+                
+                this.questionArea.innerHTML = html;
+                
+                // Tambahkan event listeners untuk navigasi dan pilihan
+                this.addQuestionEventListeners();
+                
+                // Update progress bar
+                this.updateProgress();
+            },
+            
+            // Tambahkan event listeners untuk navigasi pertanyaan
+            addQuestionEventListeners() {
+                // Pilihan ganda
+                document.querySelectorAll('.option').forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        const index = parseInt(option.dataset.index);
+                        this.answers[this.currentQuestion] = index;
+                        this.displayQuestion(this.currentQuestion);
+                    });
+                });
+                
+                // Esai
+                const textarea = document.querySelector('.uraian-answer');
+                if (textarea) {
+                    textarea.addEventListener('input', (e) => {
+                        this.answers[this.currentQuestion] = e.target.value;
+                        this.updateProgress();
+                    });
+                }
+                
+                // Tombol navigasi
+                document.querySelectorAll('.btn-nav').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const action = btn.dataset.action;
+                        
+                        if (action === 'prev') {
+                            this.displayQuestion(this.currentQuestion - 1);
+                        } else if (action === 'next') {
+                            this.displayQuestion(this.currentQuestion + 1);
+                        } else if (action === 'review') {
+                            this.showReviewPage();
+                        }
+                    });
+                });
+            },
+            
+            // Tampilkan halaman review
+            showReviewPage() {
+                this.showPage('review');
+                
+                let html = '';
+                questions.forEach((q, index) => {
+                    const isAnswered = this.answers[index] !== null;
+                    const answerText = isAnswered ? 
+                        (q.type === 'pg' ? `Jawaban: ${q.options[this.answers[index]]}` : 'Jawaban diisi') : 
+                        'Belum dijawab';
+                    
+                    html += `
+                        <li class="review-item ${isAnswered ? 'answered' : 'unanswered'}">
+                            <div>
+                                <strong>Soal ${index + 1}</strong>
+                                <div>${answerText}</div>
+                            </div>
+                            <button data-index="${index}"><i class="fas fa-edit"></i> Edit</button>
+                        </li>
+                    `;
+                });
+                
+                this.reviewList.innerHTML = html;
+                
+                // Tambahkan event listener untuk tombol edit
+                document.querySelectorAll('#review-list button').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const index = parseInt(btn.dataset.index);
+                        this.currentQuestion = index;
+                        this.showPage('exam');
+                        this.displayQuestion(index);
+                    });
+                });
+            },
+            
+            // Konfirmasi pengumpulan
+            confirmSubmit() {
+                const unanswered = this.answers.filter(a => a === null).length;
+                
+                if (unanswered > 0) {
+                    if (!confirm(`Masih ada ${unanswered} soal yang belum dijawab. Yakin ingin mengumpulkan?`)) {
+                        return;
+                    }
+                }
+                
+                this.submitExam();
+            },
+            
+            // Submit ujian
+            submitExam() {
+                clearInterval(this.timerInterval);
+                
+                // Hitung nilai
+                let score = 0;
+                const pgQuestions = questions.filter(q => q.type === 'pg');
+                
+                pgQuestions.forEach((q, i) => {
+                    if (this.answers[i] === q.answer) {
+                        score++;
+                    }
+                });
+                
+                const finalScore = Math.round((score / pgQuestions.length) * 100);
+                
+                // Hitung waktu pengerjaan
+                const endTime = new Date();
+                const duration = Math.floor((endTime - this.startTime) / 1000); // dalam detik
+                const minutes = Math.floor(duration / 60);
+                const seconds = duration % 60;
+                this.examDuration = `${minutes} menit ${seconds} detik`;
+                
+                // Tampilkan hasil
+                this.showResult(finalScore, score, pgQuestions.length);
+            },
+            
+            // Tampilkan hasil ujian
+            showResult(score, correct, total) {
+                this.showPage('result');
+                
+                // Update data
+                document.getElementById('result-name').textContent = this.studentData.nama;
+                document.getElementById('total-correct').textContent = correct;
+                document.getElementById('total-questions').textContent = total;
+                document.getElementById('final-score').textContent = score;
+                
+                // Update sertifikat
+                document.getElementById('cert-name').textContent = this.studentData.nama;
+                document.getElementById('cert-student-name').textContent = this.studentData.nama;
+                document.getElementById('cert-class').textContent = this.studentData.kelas;
+                document.getElementById('cert-score').textContent = score;
+                document.getElementById('cert-duration').textContent = this.examDuration;
+                
+                const now = new Date();
+                const formattedDate = now.toLocaleDateString('id-ID', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+                document.getElementById('cert-date').textContent = formattedDate;
+                
+                // Animasikan score
+                const scoreText = document.getElementById('score-text');
+                const scoreCircle = document.getElementById('score-circle');
+                
+                setTimeout(() => {
+                    scoreCircle.style.strokeDasharray = `${score}, 100`;
+                    scoreText.textContent = score;
+                }, 500);
+            },
+            
+            // Handle actions hasil ujian
+            handleResultActions(e) {
+                if (e.target.closest('button')) {
+                    const action = e.target.closest('button').dataset.action;
+                    
+                    if (action === 'download-pdf') {
+                        this.downloadCertificate('pdf');
+                    } else if (action === 'download-jpg') {
+                        this.downloadCertificate('jpg');
+                    } else if (action === 'whatsapp') {
+                        this.showWhatsappPreview();
+                    } else if (action === 'print') {
+                        this.printCertificate();
+                    }
+                }
+            },
+            
+            // Tampilkan preview WhatsApp
+            showWhatsappPreview() {
+                this.whatsappPreview.style.display = 'flex';
+                this.whatsappMessages.innerHTML = '';
+                
+                // Tambahkan pesan sistem
+                this.addWhatsappMessage("Sistem Ujian Halal", "Hasil ujian Anda sudah siap! Berikut detailnya:", false);
+                
+                // Tambahkan detail ujian
+                const detailMessage = `
+📝 *Detail Hasil Ujian* 📝
+
+👤 *Nama:* ${this.studentData.nama}
+🏫 *Kelas:* ${this.studentData.kelas}
+⏱ *Durasi Pengerjaan:* ${this.examDuration}
+📊 *Jumlah Soal:* 40 (35 PG + 5 Uraian)
+✅ *Jawaban Benar:* ${document.getElementById('total-correct').textContent}
+🎯 *Nilai Akhir:* ${document.getElementById('final-score').textContent}
+
+💬 *Uraian Soal Dikerjakan:*
+5 soal uraian telah diselesaikan dengan baik
+
+Selamat atas penyelesaian ujian! Terus semangat belajar dan tingkatkan prestasimu! 💪
+                `;
+                
+                setTimeout(() => {
+                    this.addWhatsappMessage("Sistem Ujian Halal", detailMessage, false);
+                    
+                    // Tambahkan pesan user
+                    setTimeout(() => {
+                        this.addWhatsappMessage(this.studentData.nama, "Terima kasih, hasilnya sudah saya terima. Saya akan terus belajar lebih giat lagi!", true);
+                    }, 1000);
+                }, 800);
+            },
+            
+            // Tambahkan pesan WhatsApp
+            addWhatsappMessage(sender, text, isSent) {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `whatsapp-message ${isSent ? 'message-sent' : 'message-received'}`;
+                messageDiv.innerHTML = `
+                    <div>${text.replace(/\n/g, '<br>')}</div>
+                    <div class="message-time">${timeString}</div>
+                `;
+                
+                this.whatsappMessages.appendChild(messageDiv);
+                this.whatsappMessages.scrollTop = this.whatsappMessages.scrollHeight;
+            },
+            
+            // Download sertifikat
+            downloadCertificate(format) {
+                this.loadingElement.style.display = 'flex';
+                
+                const { jsPDF } = window.jspdf;
+                const certificate = document.getElementById('certificate-wrapper');
+                
+                // Optimasi: Gunakan scale yang lebih rendah untuk mempercepat proses
+                setTimeout(() => {
+                    html2canvas(certificate, {
+                        scale: 1.5,
+                        useCORS: true,
+                        logging: false,
+                        backgroundColor: '#ffffff'
+                    }).then(canvas => {
+                        this.loadingElement.style.display = 'none';
+                        const imgData = canvas.toDataURL('image/png');
+                        
+                        if (format === 'jpg') {
+                            const link = document.createElement('a');
+                            link.download = `sertifikat-${this.studentData.nama}.jpg`;
+                            link.href = imgData;
+                            link.click();
+                        } else {
+                            const pdf = new jsPDF('l', 'mm', 'a4');
+                            const imgProps = pdf.getImageProperties(imgData);
+                            const pdfWidth = pdf.internal.pageSize.getWidth();
+                            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                            
+                            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                            pdf.save(`sertifikat-${this.studentData.nama}.pdf`);
+                        }
+                    }).catch((error) => {
+                        this.loadingElement.style.display = 'none';
+                        console.error("Error generating certificate:", error);
+                        alert("Gagal membuat sertifikat. Pastikan Anda terhubung ke internet.");
+                    });
+                }, 300);
+            },
+            
+            // Share via WhatsApp
+            shareViaWhatsApp() {
+                const nilai = document.getElementById('final-score').textContent;
+                const correct = document.getElementById('total-correct').textContent;
+                const total = document.getElementById('total-questions').textContent;
+
+                const message = 
+                    `📚 *HASIL UJIAN PRODUKTIF TKJ* 📚\n\n` +
+                    `👤 *Nama:* ${this.studentData.nama}\n` +
+                    `🏫 *Kelas:* ${this.studentData.kelas}\n` +
+                    `⏱ *Durasi Pengerjaan:* ${this.examDuration}\n` +
+                    `📊 *Jumlah Soal:* 40 (35 PG + 5 Uraian)\n` +
+                    `✅ *Jawaban Benar:* ${correct} dari ${total} soal\n` +
+                    `🎯 *Nilai Akhir:* ${nilai}\n\n` +
+                    `💬 *Uraian Soal Dikerjakan:*\n` +
+                    `5 soal uraian telah diselesaikan dengan baik\n\n` +
+                    `Selamat atas penyelesaian ujian! Terus semangat belajar dan tingkatkan prestasimu! 💪`;
+                
+                const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+                window.open(url, '_blank');
+            },
+            
+            // Print sertifikat
+            printCertificate() {
+                this.loadingElement.style.display = 'flex';
+                
+                setTimeout(() => {
+                    const certificate = document.getElementById('certificate-wrapper').innerHTML;
+                    const printWindow = window.open('', '_blank');
+                    printWindow.document.write(`
+                        <html>
+                        <head>
+                            <title>Sertifikat Ujian</title>
+                            <style>
+                                body { 
+                                    font-family: 'Georgia', serif; 
+                                    margin: 0;
+                                    padding: 0;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    min-height: 100vh;
+                                    background: #f5f5f5;
+                                }
+                                .certificate-container {
+                                    width: 1000px;
+                                    max-width: 90%;
+                                    padding: 20px;
+                                    background: white;
+                                    border: 20px solid transparent;
+                                    border-image: linear-gradient(45deg, #5D3FD3, #7b68ee, #20bf6b);
+                                    border-image-slice: 1;
+                                    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+                                }
+                                .certificate-border {
+                                    border: 2px solid #e0e0e0;
+                                    padding: 40px;
+                                    position: relative;
+                                }
+                                .certificate-header {
+                                    text-align: center;
+                                    margin-bottom: 40px;
+                                }
+                                .certificate-header h1 {
+                                    font-size: 42px;
+                                    font-weight: bold;
+                                    margin-bottom: 10px;
+                                    color: #2c3e50;
+                                    letter-spacing: 2px;
+                                }
+                                .certificate-header h2 {
+                                    font-size: 28px;
+                                    color: #5D3FD3;
+                                    margin-top: 10px;
+                                }
+                                .certificate-body {
+                                    text-align: center;
+                                    margin: 50px 0;
+                                }
+                                .certificate-name {
+                                    font-size: 36px;
+                                    font-weight: bold;
+                                    color: #5D3FD3;
+                                    margin: 25px 0;
+                                    text-decoration: underline;
+                                }
+                                .certificate-details {
+                                    margin: 30px 0;
+                                    text-align: left;
+                                    max-width: 700px;
+                                    margin: 30px auto;
+                                    background: #f9f9ff;
+                                    padding: 25px;
+                                    border-radius: 12px;
+                                    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+                                }
+                                .detail-row {
+                                    display: flex;
+                                    margin-bottom: 15px;
+                                    padding-bottom: 15px;
+                                    border-bottom: 1px dashed #e0e0e0;
+                                }
+                                .detail-label {
+                                    font-weight: 600;
+                                    width: 40%;
+                                    color: #5D3FD3;
+                                }
+                                .detail-value {
+                                    width: 60%;
+                                    font-weight: 500;
+                                }
+                                .certificate-score {
+                                    font-size: 80px;
+                                    font-weight: bold;
+                                    color: #5D3FD3;
+                                    margin: 20px 0;
+                                    background: linear-gradient(45deg, #5D3FD3, #7b68ee);
+                                    -webkit-background-clip: text;
+                                    -webkit-text-fill-color: transparent;
+                                    text-shadow: 0 5px 15px rgba(93, 63, 211, 0.2);
+                                }
+                                .signature-area {
+                                    display: flex;
+                                    justify-content: space-between;
+                                    margin-top: 80px;
+                                    padding-top: 20px;
+                                }
+                                .signature-box {
+                                    text-align: center;
+                                    width: 45%;
+                                }
+                                .signature-line {
+                                    border-top: 1px solid #000;
+                                    width: 200px;
+                                    margin: 0 auto;
+                                    padding-top: 5px;
+                                }
+                                .seal {
+                                    position: absolute;
+                                    top: 40px;
+                                    right: 40px;
+                                    width: 120px;
+                                    height: 120px;
+                                    border-radius: 50%;
+                                    border: 3px solid #5D3FD3;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    font-weight: bold;
+                                    color: #5D3FD3;
+                                    background: rgba(255,255,255,0.9);
+                                    transform: rotate(-15deg);
+                                    font-size: 14px;
+                                    text-align: center;
+                                    line-height: 1.4;
+                                    padding: 10px;
+                                }
+                                @media print {
+                                    body {
+                                        background: white !important;
+                                    }
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="certificate-container">
+                                <div class="certificate-border">
+                                    ${certificate}
+                                </div>
+                            </div>
+                            <script>
+                                window.onload = function() {
+                                    window.print();
+                                    setTimeout(() => {
+                                        window.close();
+                                    }, 1000);
+                                }
+                            <\/script>
+                        </body>
+                        </html>
+                    `);
+                    printWindow.document.close();
+                    this.loadingElement.style.display = 'none';
+                }, 300);
+            },
+            
+            // Start timer
+            startTimer() {
+                this.timerInterval = setInterval(() => {
+                    this.timeLeft--;
+                    
+                    if (this.timeLeft <= 0) {
+                        clearInterval(this.timerInterval);
+                        this.submitExam();
+                        return;
+                    }
+                    
+                    // Update display
+                    const minutes = Math.floor(this.timeLeft / 60);
+                    const seconds = this.timeLeft % 60;
+                    this.timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    
+                    // Ubah warna saat waktu hampir habis
+                    if (minutes < 5) {
+                        document.getElementById('timer').style.backgroundColor = '#ff6b6b';
+                    }
+                }, 1000);
+            },
+            
+            // Update progress
+            updateProgress() {
+                const answered = this.answers.filter(a => a !== null).length;
+                const progress = (answered / questions.length) * 100;
+                this.progressBar.style.width = `${progress}%`;
+            },
+            
+            // Tampilkan halaman
+            showPage(pageName) {
+                // Sembunyikan semua halaman
+                Object.values(this.pages).forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                // Tampilkan halaman yang diminta
+                this.pages[pageName].classList.add('active');
+                
+                // Scroll ke atas
+                window.scrollTo(0, 0);
+            }
+        };
+
+        // Inisialisasi aplikasi
+        document.addEventListener('DOMContentLoaded', () => {
+            UjianApp.init();
+        });
+    </script>
+</body>
+</html>
